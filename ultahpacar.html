@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 🤍</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Georgia,serif;
+    background:#080205;
+    color:white;
+    overflow-x:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-5;
+    background:
+    radial-gradient(circle at 20% 20%,#68152e 0%,transparent 30%),
+    radial-gradient(circle at 80% 80%,#4c0c21 0%,transparent 30%),
+    linear-gradient(135deg,#080205,#1a040d);
+}
+
+/* ================= PIN ================= */
+
+#lockScreen{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:25px;
+    background:radial-gradient(circle,#4d0c22,#080205 70%);
+    transition:opacity 1s ease,transform 1s ease;
+}
+
+#lockScreen.hide{
+    opacity:0;
+    transform:scale(1.15);
+    pointer-events:none;
+}
+
+.lockBox{
+    width:100%;
+    max-width:390px;
+    padding:35px 25px;
+    text-align:center;
+    border-radius:30px;
+    background:rgba(35,5,16,.88);
+    border:1px solid rgba(255,150,180,.25);
+    box-shadow:0 0 50px rgba(200,30,80,.3);
+    backdrop-filter:blur(15px);
+}
+
+.lockIcon{
+    font-size:55px;
+    margin-bottom:18px;
+}
+
+.lockBox h1{
+    color:#ffd5df;
+    font-weight:normal;
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.lockBox p{
+    color:#cfaab5;
+    font-size:14px;
+    line-height:1.7;
+}
+
+/* PIN DOT */
+
+.pinDots{
+    display:flex;
+    justify-content:center;
+    gap:11px;
+    margin:25px 0;
+}
+
+.pinDots span{
+    width:12px;
+    height:12px;
+    border:1px solid #ff8eaa;
+    border-radius:50%;
+    transition:.2s;
+}
+
+.pinDots span.active{
+    background:#ff7197;
+    box-shadow:0 0 12px #ff7197;
+}
+
+/* KEYPAD */
+
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,70px);
+    justify-content:center;
+    gap:12px;
+}
+
+.keypad button{
+    width:70px;
+    height:60px;
+    border-radius:20px;
+    border:1px solid rgba(255,150,180,.2);
+    background:rgba(255,255,255,.06);
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    transition:.2s;
+    -webkit-tap-highlight-color:transparent;
+}
+
+.keypad button:active{
+    transform:scale(.88);
+    background:rgba(220,50,100,.4);
+}
+
+.keypad .empty{
+    visibility:hidden;
+}
+
+#error{
+    color:#ff718f;
+    margin-top:18px;
+    font-size:13px;
+    display:none;
+}
+
+/* ================= TRANSITION ================= */
+
+#transitionScreen{
+    position:fixed;
+    inset:0;
+    z-index:9998;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:#080205;
+    opacity:0;
+}
+
+#transitionScreen.show{
+    display:flex;
+    animation:transitionIn 2.5s forwards;
+}
+
+.transitionText{
+    text-align:center;
+    color:#ffd6e0;
+    animation:textAppear 2s ease forwards;
+}
+
+.transitionText .heartIcon{
+    font-size:55px;
+    margin-bottom:20px;
+}
+
+.transitionText h2{
+    font-weight:normal;
+    font-size:30px;
+}
+
+.transitionText p{
+    margin-top:12px;
+    color:#cfaab5;
+}
+
+@keyframes transitionIn{
+    0%{opacity:1;}
+    65%{opacity:1;}
+    100%{
+        opacity:0;
+        visibility:hidden;
+    }
+}
+
+@keyframes textAppear{
+    0%{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    100%{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ================= WEBSITE ================= */
+
+#website{
+    display:none;
+    opacity:0;
+}
+
+#website.show{
+    display:block;
+    animation:websiteAppear 1.5s forwards;
+}
+
+@keyframes websiteAppear{
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+section{
+    min-height:100vh;
+    padding:80px 25px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.content{
+    width:100%;
+    max-width:750px;
+    text-align:center;
+}
+
+/* OPENING */
+
+.opening small{
+    color:#d990a6;
+    letter-spacing:4px;
+    font-size:12px;
+}
+
+.opening h1{
+    font-size:52px;
+    font-weight:normal;
+    color:#ffd6e0;
+    margin:20px 0 10px;
+}
+
+.opening h2{
+    font-size:34px;
+    color:#ff7197;
+    font-weight:normal;
+}
+
+.opening p{
+    margin-top:25px;
+    color:#d9b9c3;
+    line-height:1.9;
+}
+
+.highlight{
+    color:#ff7699;
+}
+
+/* MUSIC */
+
+.musicBox{
+    margin-top:35px;
+    padding:22px;
+    border-radius:25px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,130,160,.15);
+}
+
+.musicTitle{
+    color:#ff9bb3;
+    font-size:18px;
+    margin-bottom:15px;
+}
+
+.musicButton{
+    border:none;
+    border-radius:50%;
+    width:65px;
+    height:65px;
+    background:linear-gradient(135deg,#9d173e,#e34d78);
+    color:white;
+    font-size:23px;
+    cursor:pointer;
+}
+
+.musicStatus{
+    margin-top:12px;
+    color:#ad8994;
+    font-size:12px;
+}
+
+/* FOTO */
+
+.title{
+    font-size:35px;
+    color:#ffd4df;
+    font-weight:normal;
+    margin-bottom:25px;
+}
+
+.text{
+    color:#e8d8dd;
+    line-height:2;
+    font-size:16px;
+}
+
+.photoGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-top:30px;
+}
+
+.photoCard{
+    position:relative;
+    overflow:hidden;
+    border-radius:22px;
+    border:1px solid rgba(255,130,160,.2);
+    background:#19050d;
+}
+
+.photoCard img{
+    width:100%;
+    aspect-ratio:3/4;
+    object-fit:cover;
+    display:block;
+    transition:.5s;
+}
+
+.photoCard:hover img{
+    transform:scale(1.07);
+}
+
+.photoNumber{
+    position:absolute;
+    bottom:10px;
+    left:10px;
+    padding:5px 10px;
+    border-radius:20px;
+    background:rgba(0,0,0,.5);
+    font-size:11px;
+}
+
+/* CARDS */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+    margin-top:30px;
+}
+
+.card{
+    padding:25px 15px;
+    border-radius:20px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,130,160,.15);
+}
+
+.card .emoji{
+    font-size:30px;
+    margin-bottom:12px;
+}
+
+.card h3{
+    color:#ff9bb3;
+    font-size:17px;
+    margin-bottom:8px;
+}
+
+.card p{
+    color:#cdbbc1;
+    font-size:13px;
+    line-height:1.6;
+}
+
+/* SURAT */
+
+.letter{
+    padding:30px 25px;
+    border-radius:25px;
+    background:rgba(50,7,22,.7);
+    border:1px solid rgba(255,140,170,.2);
+    box-shadow:0 0 30px rgba(170,20,60,.15);
+    line-height:2;
+    color:#eee0e4;
+    text-align:left;
+}
+
+.letterTitle{
+    text-align:center;
+    color:#ff8eaa;
+    font-size:25px;
+    margin-bottom:20px;
+}
+
+/* PESAN RAHASIA */
+
+.secretBtn{
+    margin-top:30px;
+    padding:15px 30px;
+    border:none;
+    border-radius:30px;
+    background:linear-gradient(135deg,#a51840,#ed557e);
+    color:white;
+    cursor:pointer;
+    font-family:Georgia,serif;
+    font-size:15px;
+}
+
+.secret{
+    display:none;
+    margin-top:25px;
+    color:#ffb3c7;
+    font-size:20px;
+    line-height:1.7;
+}
+
+footer{
+    padding:40px 20px;
+    text-align:center;
+    color:#85636e;
+    font-size:12px;
+}
+
+/* HATI */
+
+.heart{
+    position:fixed;
+    bottom:-30px;
+    color:#ff527f;
+    pointer-events:none;
+    animation:floatUp 6s linear forwards;
+    z-index:10000;
+}
+
+@keyframes floatUp{
+    0%{
+        transform:translateY(0) scale(.5);
+        opacity:0;
+    }
+    20%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-110vh) scale(1.3) rotate(25deg);
+        opacity:0;
+    }
+}
+
+/* HP */
+
+@media(max-width:600px){
+
+    .opening h1{
+        font-size:42px;
+    }
+
+    .opening h2{
+        font-size:28px;
+    }
+
+    .photoGrid{
+        grid-template-columns:repeat(3,1fr);
+        gap:8px;
+    }
+
+    .photoCard{
+        border-radius:14px;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .title{
+        font-size:29px;
+    }
+}
+  .photo-gallery {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.photo-card {
+    width: 180px !important;
+    height: 240px !important;
+    flex: none !important;
+    margin: 0 !important;
+}
+
+.photo-card img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+  .photo-card {
+    position: relative;
+
+    width: 180px !important;
+    height: 240px !important;
+
+    flex: none !important;
+    margin: 0 !important;
+
+    overflow: hidden;
+    border-radius: 20px;
+
+    /* Border utama */
+    border: 2px solid rgba(190, 55, 85, 0.85);
+
+    /* Efek cahaya */
+    box-shadow:
+        0 0 0 4px rgba(190, 55, 85, 0.12),
+        0 0 0 7px rgba(255, 255, 255, 0.04),
+        0 10px 25px rgba(0, 0, 0, 0.45),
+        0 0 20px rgba(150, 25, 60, 0.25);
+
+    background: #210810;
+  }
+  .photo-card {
+    width: 180px !important;
+    min-height: 310px !important;
+    overflow: hidden;
+    border-radius: 20px;
+
+    border: 2px solid #a83250;
+
+    background: #210810;
+
+    box-shadow:
+        0 0 0 4px rgba(168, 50, 80, 0.15),
+        0 10px 25px rgba(0,0,0,0.5);
+}
+
+.photo-card img {
+    width: 100%;
+    height: 210px !important;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-text {
+    display: block !important;
+    padding: 12px 10px 14px;
+    text-align: center;
+    background: #210810;
+}
+
+.photo-text h3 {
+    margin: 0 0 5px;
+    color: white !important;
+    font-size: 15px;
+}
+
+.photo-text p {
+    margin: 0;
+    color: #e8b8c3 !important;
+    font-size: 11px;
+}
+  
+  
+  
+  
+  
+</style>
+</head>
+
+<body>
+
+<!-- ================= PIN ================= -->
+
+<div id="lockScreen">
+
+    <div class="lockBox">
+
+        <div class="lockIcon">🔐</div>
+
+        <h1>A Little Secret</h1>
+
+        <p>
+            Ada sesuatu yang aku siapkan khusus untukmu.
+            <br>
+            Masukkan 6 angka untuk membukanya
+          <br>
+          Clue nya tanggal bulan tahun lahir mu 🤍
+        </p>
+
+        <div class="pinDots">
+            <span id="dot1"></span>
+            <span id="dot2"></span>
+            <span id="dot3"></span>
+            <span id="dot4"></span>
+            <span id="dot5"></span>
+            <span id="dot6"></span>
+        </div>
+
+        <div class="keypad">
+
+            <button onclick="pressNumber('1')">1</button>
+            <button onclick="pressNumber('2')">2</button>
+            <button onclick="pressNumber('3')">3</button>
+
+            <button onclick="pressNumber('4')">4</button>
+            <button onclick="pressNumber('5')">5</button>
+            <button onclick="pressNumber('6')">6</button>
+
+            <button onclick="pressNumber('7')">7</button>
+            <button onclick="pressNumber('8')">8</button>
+            <button onclick="pressNumber('9')">9</button>
+
+            <button class="empty"></button>
+
+            <button onclick="pressNumber('0')">0</button>
+
+            <button onclick="deleteNumber()">⌫</button>
+
+        </div>
+
+        <div id="error">
+            Kode salah 🥺
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= TRANSISI ================= -->
+
+<div id="transitionScreen">
+
+    <div class="transitionText">
+
+        <div class="heartIcon">💗</div>
+
+        <h2>
+            Untuk seseorang yang spesial...
+        </h2>
+
+        <p>
+            Ada sesuatu yang ingin aku tunjukkan.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ================= WEBSITE ================= -->
+
+<div id="website">
+
+<!-- OPENING -->
+
+<section>
+
+<div class="content opening">
+
+    <small>
+        A LITTLE WEBSITE MADE FOR YOU
+    </small>
+
+    <h1>
+        Happy Birthday
+    </h1>
+
+    <h2>
+      Annisa SM Ziyadatullah 🤍
+    </h2>
+
+    <p>
+
+        Ada seseorang yang hari ini
+        pantas nian utk ngedapetin sedikit lebih
+        banyak kebahagiaan.
+
+        <br><br>
+
+        And orang itu...
+
+        <br>
+
+        <span class="highlight">
+            kamu.
+        </span>
+
+    </p>
+
+    <!-- MUSIK -->
+
+    <div class="musicBox">
+
+        <div class="musicTitle">
+            🎵 Lagu untuk ngawani perjalanan ini
+        </div>
+
+        <audio id="myMusic" src="beer.mp3"></audio>
+
+        <button
+            class="musicButton"
+            onclick="toggleMusic()"
+            id="musicBtn">
+
+            ▶
+
+        </button>
+
+        <div
+            class="musicStatus"
+            id="musicStatus">
+
+            Tekan untuk memutar lagu 💗
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+<!-- 3 FOTO -->
+
+<section>
+
+<div class="content">
+
+    <h2 class="title">
+        Our Little Memories 📸
+    </h2>
+
+    <p class="text">
+
+        Tiga foto,
+        tiga kenangan,
+        dan banyak cerita di baliknya. 🥹💕
+
+    </p>
+
+<div class="photo-gallery">
+
+    <div class="photo-card">
+        <img src="1.jpg" alt="Foto 1">
+
+        <div class="photo-text">
+            <h3>Our Little Moment</h3>
+            
+        </div>
+    </div>
+
+
+    <div class="photo-card">
+        <img src="4.jpg" alt="Foto 2">
+
+        <div class="photo-text">
+            <h3>You & Me</h3>
+          
+        </div>
+    </div>
+
+
+    <div class="photo-card">
+        <img src="3.jpg" alt="Foto 3">
+
+        <div class="photo-text">
+            <h3>Our Memories</h3>
+            <p>Semoga selalu bersama 💗</p>
+        </div>
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- UCAPAN -->
+
+<section>
+
+<div class="content">
+
+    <h2 class="title">
+        Selamat Ulang Tahun Ya Sayanggg 🎂
+    </h2>
+
+    <p class="text">
+
+        Semoga di umurmu yang baru,
+        makin banyak hal baik yang dateng
+        ke hidup kau.
+
+        <br><br>
+
+        Semoga langkahmu selalu dimudahkan,
+        impianmu satu per satu tercapai,
+        dan senyummu selalu punya alasan.
+
+        <br><br>
+
+        And semoga tidak jadi beban dalam keluarga, pertemanan, and semuanya, jangan jadi org yg nyusahin banyak orang, kau harus jadi orang yang baik di sudut pandang berbagai orang.
+
+    </p>
+
+</div>
+
+</section>
+
+<!-- ALASAN -->
+
+<section>
+
+<div class="content">
+
+    <h2 class="title">
+        Kenapa Kau Berarti Bagi Aku? 
+    </h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="emoji">🌷</div>
+            <h3>Senyummu</h3>
+            <p>
+                Setiap kali kau senyum tu, jujur aku kadang tesalting dewekk geloo, kau senyum bae biso nular, ntah ngapo yoo senyuman kau tu bikin ak senyum² dewek manjang, ntah la dari pap, ntah pas ketemu langsungg, huu ai laik.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="emoji">🤍</div>
+            <h3>Caramu Peduli</h3>
+            <p>
+                Tanpa kau sadari yo, hal kecik yg kau lakuin nihh kadang ak anggep kek berarti niannn, walau bagi kau kadang kek biaso bae, tapi bagi aku itu berarti nian sih niss, ntah la kau ngasih emoji setiap mau off, ntah la ngucapin goodmorning/goodnight, wah baru kali nian aku dapet cewe yg mau ngetik gitu ke aku, and kau tu jugoo peka nian asal kau tau, ak belum nyebut nak ngapoin bae kau udah biso nebak and tebakan mu itu bener loh, wah ini kau nyo terlalu perhatian nian sih ke aku .
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="emoji">✨</div>
+            <h3>Dirimu</h3>
+            <p>
+                Nah kau tu orang nyo cantikk lohh niss tapi yg bikin dak nyambung tu kau nyo malah dak pedean coo, nihh selamo aku nengok muko kau, belum ado yg bikin aku ilfeel karno fisik kau, dak do samsek, kau nak muko nyo beruntusan, tapi pas ketemu langsung muko kau mulus nian ege, trus yg kau anggep muka mu irenk, kagak tuu, selamo ketemuan dak do rai kau yg sampe itam nian, nih yo niss, musuh terbesar kau ni salah satunyo tu dak pedeann, wah gile niss, aku saranin kurangin insecure kau nii, kauu tuu emang begitu cantikk nisss.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="emoji">🫶</div>
+            <h3>Kenangan Kita</h3>
+            <p>
+                Beuhhhh ini bahas kenangan wak, kalau soal kenangan tuu itu terlalu banyak nian wee, dari kisah awal kito ketemuan di bazar laa, kito goes jogging laa, and masihh banyak lagi laaa, kalau dari segi kenangan ketemuan langsung ni aku suko niann, biso ngobrol amo kau, eye contact ( ini sih yg paling aku suko ), wah pokok nyo itu lahh yg ak suko kalau ketemu langsung nii, komunikasi secara langsung + nengok rai cantik mu itu lohhh, nah kalau dari segi chatan wahh, banyak nian kau bikin² namo panggilan aku ni, and paling sering kau ngucapin aku apopun disituu, trus kito becandonyo dari chatan galoo, wuhh banyak nian laa pokok nyo.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+<!-- SURAT -->
+
+<section>
+
+<div class="content">
+
+    <div class="letter">
+
+        <div class="letterTitle">
+            💌 Sebuah Surat Untukmu
+        </div>
+
+        <p>
+            Hai, sayang.
+        </p>
+
+        <br>
+
+        <p>
+            Hari ini adalah hari spesialmu.
+            Jadi aku nak pakek kesempatan
+            ini untuk ngomong sesuatu yang
+            mungkin dak selalu aku katakan.
+        </p>
+
+        <br>
+
+        <p>
+            Makasih sudah hadir dalam hidup aku.
+            makasih untuk setiap cerita,
+            canda, perhatian, and waktu yang
+            pernah kita lakuin bersama.
+        </p>
+
+        <br>
+
+        <p>
+            Aku mungkin bukan orang yang
+            selalu biso ngelakuin semuanyo dengan
+            sempurna.
+
+            Tapi aku nak belajar terus utk jadi
+            seseorang yang biso ngebuat kau merasa
+            dihargai and disayangi.
+        </p>
+
+        <br>
+
+        <p>
+            And semoga panjang umur, sehat terus, makin bahagia, moga semua yang kau usahain bisa tercapai. Tetep setia sama aku yaaa, and tetap kau la yang aku kenal dan aku sayang.
+        </p>
+
+        <br>
+      <p>
+        Di umur baru ini kau harus biso jadi yg lebih terbaik dari sebelum nyaa, trus rajin² yaa utk rawat/jagaa diri kamuu, jangan sampe banyak males²an lagi,
+      </p>
+      
+    <br>
+
+      <p>
+Seneng nian sampe sekarang ini hubungan kito masih baik² saja, and makasih banget ya udah hadir di hidup aku 😽🫶🏻, duh ak jugo senang biso ketemu orang kek kau nii niss, kau udah jadi penyemangat hidup aku, penyemangat untuk aku berubah, suko ngebaikin mood aku, ak swueneng banget rek 🥹, selamo aku ngabisin waktu samo kau pun bawaan nyo bahagia truss, tiap kali chatan selalu senyum² manjang yg bikin hari ak lumayan ceria, dari lawakan mu, becanda mu, semua nya aku suka banget niss, beruntung nian ak udah milikin kau ni, pokok nya makasih banyak yaa udah hadir di hidupp ku, and maafin jugo semuo salah ak ke kau, makacii banyak yaa udah kau nemenin hidup ku selamo ini 😽💞
+      </p>
+      
+      <br>
+
+      <p>
+        Pokoknya hari ini kau harus bahagia, karena hari ini tu hari lahirnyo orang yang sekarang jadi salah satu bagian yg paling penting dalam hidup akuu. I love you, sayang. 🫶🏻
+      </p>
+<br>
+        <p class="highlight">
+
+            Selamat ulang tahun, Nisa.
+
+            <br>
+
+            Tetap jadi kamu yang aku kenal. ❤️
+
+        </>
+
+    </div>
+
+</div>
+
+</section>
+
+<!-- PESAN RAHASIA -->
+
+<section>
+
+<div class="content">
+
+    <h2 class="title">
+        Satu Hal Terakhir... 💗
+    </h2>
+
+    <p class="text">
+
+        Sebenarnya masih ado satu pesan
+        yang aku sembunyiin di sini.
+
+        <br><br>
+
+        Coba tekan tombolnyo.
+
+    </p>
+
+    <button
+        class="secretBtn"
+        onclick="secretMessage()">
+
+        💝 Buka Pesan Rahasia
+
+    </button>
+
+    <div
+        class="secret"
+        id="secret">
+
+        Kalau kamu sedang membaca ini...
+
+        <br><br>
+
+        <b>
+            Aku cuma ingin kau tahu,
+            kamu sangat berarti. 💗
+        </b>
+
+        <br><br>
+
+        Happy Birthday, sayang. 🎂
+
+        <br><br>
+
+        Semoga hari ini,
+        besok, dan hari-hari setelahnya
+        selalu membawa kebahagiaan untukmu.
+
+    </div>
+
+</div>
+
+</section>
+
+<footer>
+    Made with 🤍 especially for Nisa
+</footer>
+
+</div>
+  
+
+<script>
+
+/* ================= PIN ================= */
+
+const PASSWORD = "290912";
+
+let enteredPIN = "";
+
+function pressNumber(number){
+
+    if(enteredPIN.length >= 6){
+        return;
+    }
+
+    enteredPIN += number;
+
+    updateDots();
+
+    if(enteredPIN.length === 6){
+        setTimeout(checkPIN,300);
+    }
+}
+
+function deleteNumber(){
+
+    enteredPIN =
+        enteredPIN.slice(0,-1);
+
+    updateDots();
+
+    document.getElementById("error")
+        .style.display="none";
+}
+
+function updateDots(){
+
+    for(let i=1;i<=6;i++){
+
+        const dot =
+            document.getElementById("dot"+i);
+
+        if(i <= enteredPIN.length){
+            dot.classList.add("active");
+        }else{
+            dot.classList.remove("active");
+        }
+
+    }
+}
+
+function checkPIN(){
+
+    if(enteredPIN === PASSWORD){
+
+        document.getElementById("lockScreen")
+            .classList.add("hide");
+
+        setTimeout(function(){
+
+            document.getElementById(
+                "transitionScreen"
+            ).classList.add("show");
+
+            setTimeout(function(){
+
+                document.getElementById(
+                    "website"
+                ).classList.add("show");
+
+                createHearts(35);
+
+            },900);
+
+        },700);
+
+    }else{
+
+        document.getElementById("error")
+            .style.display="block";
+
+        enteredPIN="";
+
+        setTimeout(updateDots,300);
+
+    }
+}
+
+/* ================= MUSIK ================= */
+
+const music =
+    document.getElementById("myMusic");
+
+const musicBtn =
+    document.getElementById("musicBtn");
+
+const musicStatus =
+    document.getElementById("musicStatus");
+
+function toggleMusic(){
+
+    if(music.paused){
+
+        music.play();
+
+        musicBtn.innerHTML="⏸";
+
+        musicStatus.innerHTML=
+        "Sedang memutar lagu ❤️";
+
+    }else{
+
+        music.pause();
+
+        musicBtn.innerHTML="▶";
+
+        musicStatus.innerHTML=
+        "Lagu dijeda";
+
+    }
+}
+
+/* ================= PESAN ================= */
+
+function secretMessage(){
+
+    document.getElementById("secret")
+        .style.display="block";
+
+    createHearts(50);
+}
+
+/* ================= HATI ================= */
+
+function createHearts(amount){
+
+    for(let i=0;i<amount;i++){
+
+        const heart =
+            document.createElement("div");
+
+        heart.className="heart";
+
+        heart.innerHTML =
+            Math.random() > .5
+            ? "♥"
+            : "❤";
+
+        heart.style.left =
+            Math.random()*100+"%";
+
+        heart.style.fontSize =
+            (15+Math.random()*25)+"px";
+
+        heart.style.animationDuration =
+            (3+Math.random()*4)+"s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(function(){
+            heart.remove();
+        },7000);
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
